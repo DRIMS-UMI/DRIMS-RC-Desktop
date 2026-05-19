@@ -3,7 +3,7 @@
   "description": "DRIMS Research Portal Desktop Client",
   "author": "DRIMS UMI <drim@umi.ac.ug>",
   "private": true,
-  "version": "1.0.7",
+  "version": "1.0.8",
   "type": "module",
   "main": "electron/main.cjs",
   "scripts": {
