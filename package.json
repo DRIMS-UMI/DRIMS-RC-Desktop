@@ -1,7 +1,9 @@
 {
   "name": "umi-management",
+  "description": "DRIMS Research Portal Desktop Client",
+  "author": "DRIMS UMI <drim@umi.ac.ug>",
   "private": true,
-  "version": "1.0.2",
+  "version": "1.0.3",
   "type": "module",
   "main": "electron/main.cjs",
   "scripts": {
