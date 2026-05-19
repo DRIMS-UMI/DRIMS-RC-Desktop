@@ -40,6 +40,7 @@ import NotificationsManagement from "./pages/6.notifications/NotificationsManage
 import TableBuilder from "./pages/tables";
 // PWA Component
 import PWAInstaller from "./components/PWAInstaller";
+import DesktopUpdater from "./components/DesktopUpdater";
 import Settings from "./pages/settings";
 import EditSchool from "./pages/5.schools/EditSchool";
 import RegisterSuperAdmin from "./pages/0.auth/RegisterSuperAdmin";
@@ -254,6 +255,8 @@ const App = () => {
         <AppRoutes />
         {/* PWA Installer - shows on all pages including login */}
         <PWAInstaller />
+        {/* Desktop Auto-Updater Alert Overlay */}
+        <DesktopUpdater />
       </Router>
     </AuthProvider>
   );

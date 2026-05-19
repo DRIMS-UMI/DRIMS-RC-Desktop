@@ -1,13 +1,15 @@
-const { app, BrowserWindow, session } = require('electron');
+const { app, BrowserWindow, session, ipcMain } = require('electron');
 const { autoUpdater } = require('electron-updater'); // Import autoUpdater
 const path = require('path');
 const isDev = process.env.NODE_ENV === 'development';
+
+let mainWindow;
 
 // Automatically download updates in the background
 autoUpdater.autoDownload = true;
 
 function createWindow() {
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
     icon: process.platform === 'win32'
@@ -41,6 +43,41 @@ function createWindow() {
     mainWindow.loadFile(path.join(__dirname, '../dist/index.html'));
   }
 }
+
+// Auto-updater listeners for real-time React UI updates
+autoUpdater.on('checking-for-update', () => {
+  if (mainWindow) mainWindow.webContents.send('update-message', { type: 'checking' });
+});
+
+autoUpdater.on('update-available', (info) => {
+  if (mainWindow) mainWindow.webContents.send('update-message', { type: 'available', version: info.version });
+});
+
+autoUpdater.on('update-not-available', () => {
+  if (mainWindow) mainWindow.webContents.send('update-message', { type: 'not-available' });
+});
+
+autoUpdater.on('download-progress', (progressObj) => {
+  if (mainWindow) {
+    mainWindow.webContents.send('update-message', {
+      type: 'progress',
+      percent: Math.round(progressObj.percent)
+    });
+  }
+});
+
+autoUpdater.on('update-downloaded', () => {
+  if (mainWindow) mainWindow.webContents.send('update-message', { type: 'downloaded' });
+});
+
+autoUpdater.on('error', (err) => {
+  if (mainWindow) mainWindow.webContents.send('update-message', { type: 'error', message: err.message });
+});
+
+// IPC listener from React to restart and install
+ipcMain.on('restart-and-install', () => {
+  autoUpdater.quitAndInstall();
+});
 
 app.whenReady().then(() => {
   createWindow();
