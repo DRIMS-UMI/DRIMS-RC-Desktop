@@ -3,7 +3,7 @@
   "description": "DRIMS Research Portal Desktop Client",
   "author": "DRIMS UMI <drim@umi.ac.ug>",
   "private": true,
-  "version": "1.0.8",
+  "version": "1.0.9",
   "type": "module",
   "main": "electron/main.cjs",
   "scripts": {
@@ -93,12 +93,20 @@
     },
     "mac": {
       "target": [
-        "dmg",
-        "zip"
-      ],
-      "arch": [
-        "x64",
-        "arm64"
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
       ]
     },
     "win": {
