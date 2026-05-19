@@ -3,12 +3,15 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "main": "electron/main.cjs",
   "scripts": {
     "dev": "vite --host",
     "dev:windows": "set FORCE_COLOR=true && vite",
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "electron:dev": "concurrently \"vite --port 5181\" \"wait-on tcp:5181 && cross-env NODE_ENV=development electron .\"",
+    "electron:build": "vite build && electron-builder"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.18",
@@ -33,6 +36,7 @@
     "docx": "^9.5.1",
     "docx-preview": "^0.3.5",
     "docxtemplater": "^3.60.2",
+    "electron-updater": "^6.8.3",
     "file-saver": "^2.0.5",
     "formik": "^2.4.6",
     "lucide-react": "^0.476.0",
@@ -59,6 +63,10 @@
     "@iconify-icon/react": "^2.3.0",
     "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.17",
+    "concurrently": "^9.2.1",
+    "cross-env": "^10.1.0",
+    "electron": "^42.1.0",
+    "electron-builder": "^26.8.1",
     "eslint": "^8.55.0",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
@@ -67,6 +75,35 @@
     "tailwindcss": "^3.4.1",
     "vite": "^4.5.2",
     "vite-plugin-pwa": "^1.0.1",
+    "wait-on": "^9.0.10",
     "workbox-window": "^7.3.0"
+  },
+  "build": {
+    "appId": "com.umi.management",
+    "productName": "DRIMS Research Portal",
+    "publish": {
+      "provider": "github",
+      "owner": "DRIMS-UMI",
+      "repo": "DRIMS-RC-Desktop"
+    },
+    "directories": {
+      "output": "release"
+    },
+    "mac": {
+      "target": [
+        "dmg"
+      ]
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ]
+    }
   }
 }

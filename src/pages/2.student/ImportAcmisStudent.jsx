@@ -39,8 +39,7 @@ const ImportAcmisStudent = () => {
     // Map ACMIS data to DRIMS studentPersonalInfo structure
     const studentInfo = {
       title: acmisData.title || "",
-      firstName: acmisData.first_name || "",
-      lastName: acmisData.last_name || "",
+      fullName: `${acmisData.first_name} ${acmisData.last_name}`,
       registrationNumber: acmisData.registration_number || "",
       email: acmisData.email || "",
       phoneNumber: acmisData.phone_number || "",
