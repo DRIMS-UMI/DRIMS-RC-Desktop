@@ -26,8 +26,9 @@ const ReallocationMonitoring = () => {
     endDate: dateRange.endDate,
     supervisorId: selectedSupervisor !== 'ALL' ? selectedSupervisor : undefined
   });
-  
+
   const { data: supervisorsData, isLoading: supervisorsLoading } = useGetAllSupervisors();
+
 
   const statistics = reallocationData?.statistics || {};
   const supervisorStats = reallocationData?.supervisorStats || [];
@@ -325,7 +326,7 @@ const ReallocationMonitoring = () => {
             ]
           }),
           // Data rows
-          ...supervisorStats.map(supervisor => 
+          ...supervisorStats.map(supervisor =>
             new DocxTableRow({
               children: [
                 new DocxTableCell({
@@ -341,9 +342,9 @@ const ReallocationMonitoring = () => {
                   width: { size: 20, type: WidthType.PERCENTAGE }
                 }),
                 new DocxTableCell({
-                  children: [new Paragraph({ 
-                    text: `${supervisor.netChange >= 0 ? '+' : ''}${supervisor.netChange}`, 
-                    alignment: AlignmentType.CENTER 
+                  children: [new Paragraph({
+                    text: `${supervisor.netChange >= 0 ? '+' : ''}${supervisor.netChange}`,
+                    alignment: AlignmentType.CENTER
                   })],
                   width: { size: 20, type: WidthType.PERCENTAGE }
                 })
@@ -393,7 +394,7 @@ const ReallocationMonitoring = () => {
             ]
           }),
           // Data rows
-          ...commonReasons.map(reason => 
+          ...commonReasons.map(reason =>
             new DocxTableRow({
               children: [
                 new DocxTableCell({
@@ -518,7 +519,7 @@ const ReallocationMonitoring = () => {
                   <SelectItem value="ALL">All Supervisors</SelectItem>
                   {supervisors.map((supervisor) => (
                     <SelectItem key={supervisor.id} value={supervisor.id}>
-                      {supervisor.user?.name || 'Unknown Supervisor'}
+                      {supervisor?.name || 'Unknown Supervisor'}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -607,8 +608,8 @@ const ReallocationMonitoring = () => {
                 <ResponsiveContainer width="100%" height={300}>
                   <BarChart data={monthlyTrends}>
                     <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis 
-                      dataKey="month" 
+                    <XAxis
+                      dataKey="month"
                       tickFormatter={formatMonth}
                       angle={-45}
                       textAnchor="end"
@@ -616,7 +617,7 @@ const ReallocationMonitoring = () => {
                       fontSize={12}
                     />
                     <YAxis fontSize={12} />
-                    <Tooltip 
+                    <Tooltip
                       formatter={(value) => [value, 'Reallocations']}
                       labelFormatter={(label) => `Month: ${formatMonth(label)}`}
                     />
@@ -651,7 +652,7 @@ const ReallocationMonitoring = () => {
                         <Cell key={`cell-${index}`} fill={['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'][index % 5]} />
                       ))}
                     </Pie>
-                    <Tooltip 
+                    <Tooltip
                       formatter={(value, name) => [value, 'Count']}
                     />
                   </PieChart>
@@ -722,8 +723,8 @@ const ReallocationMonitoring = () => {
               <ResponsiveContainer width="100%" height={400}>
                 <LineChart data={monthlyTrends}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis 
-                    dataKey="month" 
+                  <XAxis
+                    dataKey="month"
                     tickFormatter={formatMonth}
                     angle={-45}
                     textAnchor="end"
@@ -731,14 +732,14 @@ const ReallocationMonitoring = () => {
                     fontSize={12}
                   />
                   <YAxis fontSize={12} />
-                  <Tooltip 
+                  <Tooltip
                     formatter={(value) => [value, 'Reallocations']}
                     labelFormatter={(label) => `Month: ${formatMonth(label)}`}
                   />
-                  <Line 
-                    type="monotone" 
-                    dataKey="count" 
-                    stroke="#3b82f6" 
+                  <Line
+                    type="monotone"
+                    dataKey="count"
+                    stroke="#3b82f6"
                     strokeWidth={3}
                     dot={{ fill: '#3b82f6', strokeWidth: 2, r: 4 }}
                     activeDot={{ r: 6 }}
@@ -773,7 +774,7 @@ const ReallocationMonitoring = () => {
                         Changed by {activity.changedBy}
                       </Badge>
                     </div>
-                    
+
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div>
                         <Label className="text-xs text-gray-500">Student</Label>
@@ -788,7 +789,7 @@ const ReallocationMonitoring = () => {
                         <p className="font-medium text-green-600">{activity.newSupervisorName}</p>
                       </div>
                     </div>
-                    
+
                     {activity.reason && (
                       <div className="mt-3">
                         <Label className="text-xs text-gray-500">Reason</Label>

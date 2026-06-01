@@ -53,7 +53,7 @@ const ResearchClinicManagement = () => {
   const { data: clinicDaysData, isLoading: clinicDaysLoading } = useGetAllResearchClinicDays();
   const { data: bookingsData, isLoading: bookingsLoading } = useGetResearchClinicBookings();
   const { data: statisticsData, isLoading: statisticsLoading } = useGetResearchClinicStatistics();
-  
+
   // Mutations
   const createClinicDayMutation = useCreateResearchClinicDay();
   const updateClinicDayMutation = useUpdateResearchClinicDay();
@@ -85,7 +85,7 @@ const ResearchClinicManagement = () => {
         weekStartDate: new Date().toISOString().split('T')[0],
         numberOfWeeks: 1
       });
-      
+
       // Refresh the data to show new sessions
       queryClient.invalidateQueries({ queryKey: ['researchClinicDays'] });
     } catch (error) {
@@ -100,7 +100,7 @@ const ResearchClinicManagement = () => {
         id: selectedDay.id,
         data: formData
       });
-      
+
       toast.success('Weekly clinic schedule updated successfully');
       setShowEditDialog(false);
       setSelectedDay(null);
@@ -114,7 +114,7 @@ const ResearchClinicManagement = () => {
         weekStartDate: new Date().toISOString().split('T')[0],
         numberOfWeeks: 1
       });
-      
+
       // Refresh the data to show updated sessions
       queryClient.invalidateQueries({ queryKey: ['researchClinicDays'] });
     } catch (error) {
@@ -208,7 +208,7 @@ const ResearchClinicManagement = () => {
 
     const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const selectedDays = clinicDay.selectedDaysOfWeek.map(day => daysOfWeek[day]).join(', ');
-    
+
     return `${clinicDay.numberOfWeeks} week(s) - ${selectedDays}`;
   };
 
@@ -225,18 +225,18 @@ const ResearchClinicManagement = () => {
     const weekStart = new Date(startDate);
     weekStart.setDate(weekStart.getDate() + (weekIndex * 7));
     const weekDates = [];
-    
+
     for (let i = 0; i < 7; i++) {
       const date = new Date(weekStart);
       date.setDate(date.getDate() + i);
       weekDates.push(date);
     }
-    
+
     return weekDates;
   };
 
   const isDateSelected = (date, selectedDates) => {
-    return selectedDates.some(selectedDate => 
+    return selectedDates.some(selectedDate =>
       selectedDate.toDateString() === date.toDateString()
     );
   };
@@ -291,7 +291,7 @@ const ResearchClinicManagement = () => {
   const getGoogleCalendarWeeks = (startDate, numberOfWeeks) => {
     const weeks = [];
     const weekStart = getWeekStart(startDate);
-    
+
     for (let i = 0; i < numberOfWeeks; i++) {
       const weekDates = [];
       for (let j = 0; j < 7; j++) {
@@ -308,16 +308,16 @@ const ResearchClinicManagement = () => {
     const today = new Date();
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
-    
+
     if (date.toDateString() === today.toDateString()) {
       return 'Today';
     } else if (date.toDateString() === tomorrow.toDateString()) {
       return 'Tomorrow';
     } else {
-      return date.toLocaleDateString('en-US', { 
-        weekday: 'short', 
-        month: 'short', 
-        day: 'numeric' 
+      return date.toLocaleDateString('en-US', {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric'
       });
     }
   };
@@ -328,8 +328,8 @@ const ResearchClinicManagement = () => {
 
   const isCurrentWeek = (weekDates) => {
     const today = new Date();
-    return weekDates.some(date => 
-      date.getTime() >= getWeekStart(today).getTime() && 
+    return weekDates.some(date =>
+      date.getTime() >= getWeekStart(today).getTime() &&
       date.getTime() < getWeekStart(today).getTime() + (7 * 24 * 60 * 60 * 1000)
     );
   };
@@ -357,11 +357,11 @@ const ResearchClinicManagement = () => {
 
     for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
       const dateStr = d.toISOString().split('T')[0];
-      const dayBookings = bookings.filter(booking => 
+      const dayBookings = bookings.filter(booking =>
         booking.clinicDay.date === dateStr
       );
       cumulative += dayBookings.length;
-      
+
       data.push({
         date: dateStr,
         cumulative: cumulative,
@@ -406,14 +406,14 @@ const ResearchClinicManagement = () => {
     for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 7)) {
       const weekEnd = new Date(d);
       weekEnd.setDate(weekEnd.getDate() + 6);
-      
+
       const weekBookings = bookings.filter(booking => {
         const bookingDate = new Date(booking.clinicDay.date);
         return bookingDate >= d && bookingDate <= weekEnd;
       });
 
       const weekLabel = `${d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${weekEnd.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
-      
+
       data.push({
         week: weekLabel,
         bookings: weekBookings.length,
@@ -431,10 +431,10 @@ const ResearchClinicManagement = () => {
 
     for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
       const dateStr = d.toISOString().split('T')[0];
-      const dayBookings = bookings.filter(booking => 
+      const dayBookings = bookings.filter(booking =>
         booking.clinicDay.date === dateStr
       );
-      
+
       data.push({
         date: dateStr,
         bookings: dayBookings.length,
@@ -485,10 +485,10 @@ const ResearchClinicManagement = () => {
       filterBookingsByDateRange(bookings, dateRange.startDate, dateRange.endDate),
       selectedStatus
     );
-    
+
     const statusBreakdown = generateStatusBreakdown(filteredBookings);
     const uniqueStudents = getUniqueStudents(filteredBookings);
-    
+
     return `
       <!DOCTYPE html>
       <html>
@@ -555,8 +555,8 @@ const ResearchClinicManagement = () => {
               <tbody>
                 ${filteredBookings.map(booking => `
                   <tr>
-                    <td>${booking.student.user.name}</td>
-                    <td>${booking.student.user.email}</td>
+                    <td>${booking.student?.studentUser?.fullName}</td>
+                    <td>${booking.student?.studentUser?.email}</td>
                     <td>${formatDate(booking.clinicDay.date)}</td>
                     <td>${formatTime(booking.clinicDay.startTime)} - ${formatTime(booking.clinicDay.endTime)}</td>
                     <td><span class="status-badge status-${booking.status.toLowerCase()}">${booking.status}</span></td>
@@ -576,7 +576,7 @@ const ResearchClinicManagement = () => {
       filterBookingsByDateRange(bookings, dateRange.startDate, dateRange.endDate),
       selectedStatus
     );
-    
+
     const statusBreakdown = generateStatusBreakdown(filteredBookings);
     const uniqueStudents = getUniqueStudents(filteredBookings);
 
@@ -686,7 +686,7 @@ const ResearchClinicManagement = () => {
             ]
           }),
           // Data rows
-          ...Object.entries(statusBreakdown).map(([status, count]) => 
+          ...Object.entries(statusBreakdown).map(([status, count]) =>
             new DocxTableRow({
               children: [
                 new DocxTableCell({
@@ -698,9 +698,9 @@ const ResearchClinicManagement = () => {
                   width: { size: 35, type: WidthType.PERCENTAGE }
                 }),
                 new DocxTableCell({
-                  children: [new Paragraph({ 
-                    text: `${((count / filteredBookings.length) * 100).toFixed(1)}%`, 
-                    alignment: AlignmentType.CENTER 
+                  children: [new Paragraph({
+                    text: `${((count / filteredBookings.length) * 100).toFixed(1)}%`,
+                    alignment: AlignmentType.CENTER
                   })],
                   width: { size: 35, type: WidthType.PERCENTAGE }
                 })
@@ -770,15 +770,15 @@ const ResearchClinicManagement = () => {
             ]
           }),
           // Data rows
-          ...filteredBookings.map(booking => 
+          ...filteredBookings.map(booking =>
             new DocxTableRow({
               children: [
                 new DocxTableCell({
-                  children: [new Paragraph({ text: booking.student.user.name })],
+                  children: [new Paragraph({ text: booking.student?.studentUser?.fullName })],
                   width: { size: 20, type: WidthType.PERCENTAGE }
                 }),
                 new DocxTableCell({
-                  children: [new Paragraph({ text: booking.student.user.email })],
+                  children: [new Paragraph({ text: booking.student?.studentUser?.email })],
                   width: { size: 25, type: WidthType.PERCENTAGE }
                 }),
                 new DocxTableCell({
@@ -786,8 +786,8 @@ const ResearchClinicManagement = () => {
                   width: { size: 20, type: WidthType.PERCENTAGE }
                 }),
                 new DocxTableCell({
-                  children: [new Paragraph({ 
-                    text: `${formatTime(booking.clinicDay.startTime)} - ${formatTime(booking.clinicDay.endTime)}` 
+                  children: [new Paragraph({
+                    text: `${formatTime(booking.clinicDay.startTime)} - ${formatTime(booking.clinicDay.endTime)}`
                   })],
                   width: { size: 15, type: WidthType.PERCENTAGE }
                 }),
@@ -863,21 +863,21 @@ const ResearchClinicManagement = () => {
               return acc;
             }, {});
 
-            return Object.values(uniqueStudentBookings).map(({ student, bookings }) => 
+            return Object.values(uniqueStudentBookings).map(({ student, bookings }) =>
               new DocxTableRow({
                 children: [
                   new DocxTableCell({
-                    children: [new Paragraph({ text: student.user.name })],
+                    children: [new Paragraph({ text: student.studentUser?.fullName })],
                     width: { size: 40, type: WidthType.PERCENTAGE }
                   }),
                   new DocxTableCell({
-                    children: [new Paragraph({ text: student.user.email })],
+                    children: [new Paragraph({ text: student.studentUser?.email })],
                     width: { size: 40, type: WidthType.PERCENTAGE }
                   }),
                   new DocxTableCell({
-                    children: [new Paragraph({ 
-                      text: bookings.length.toString(), 
-                      alignment: AlignmentType.CENTER 
+                    children: [new Paragraph({
+                      text: bookings.length.toString(),
+                      alignment: AlignmentType.CENTER
                     })],
                     width: { size: 20, type: WidthType.PERCENTAGE }
                   })
@@ -934,7 +934,7 @@ const ResearchClinicManagement = () => {
             Manage clinic days, view bookings, and track statistics
           </p>
         </div>
-       
+
       </div>
 
       {/* Tabs */}
@@ -983,7 +983,7 @@ const ResearchClinicManagement = () => {
                       </div>
                       {getStatusBadge(day.status)}
                     </div>
-                    
+
                     <div className="space-y-2 mb-4">
                       <div className="flex items-center gap-2 text-sm text-gray-600">
                         <Clock className="h-4 w-4" />
@@ -1110,10 +1110,10 @@ const ResearchClinicManagement = () => {
                       <TableCell>
                         <div>
                           <div className="font-medium">
-                            {booking.student.user.name}
+                            {booking.student?.studentUser?.fullName}
                           </div>
                           <div className="text-sm text-gray-600">
-                            {booking.student.user.email}
+                            {booking.student?.studentUser?.email}
                           </div>
                         </div>
                       </TableCell>
@@ -1261,7 +1261,7 @@ const ResearchClinicManagement = () => {
                     </CardHeader>
                     <CardContent>
                       <div className="text-2xl font-bold">
-                        {filteredBookings.length > 0 
+                        {filteredBookings.length > 0
                           ? Math.round((statusBreakdown.COMPLETED || 0) / filteredBookings.length * 100)
                           : 0}%
                       </div>
@@ -1286,30 +1286,30 @@ const ResearchClinicManagement = () => {
                       <ResponsiveContainer width="100%" height={300}>
                         <AreaChart data={cumulativeData}>
                           <CartesianGrid strokeDasharray="3 3" />
-                          <XAxis 
-                            dataKey="formattedDate" 
+                          <XAxis
+                            dataKey="formattedDate"
                             angle={-45}
                             textAnchor="end"
                             height={80}
                             fontSize={12}
                           />
                           <YAxis fontSize={12} />
-                          <Tooltip 
+                          <Tooltip
                             formatter={(value, name) => [value, name === 'cumulative' ? 'Cumulative Bookings' : 'Daily Bookings']}
                             labelFormatter={(label) => `Date: ${label}`}
                           />
-                          <Area 
-                            type="monotone" 
-                            dataKey="cumulative" 
-                            stroke="#3b82f6" 
-                            fill="#3b82f6" 
+                          <Area
+                            type="monotone"
+                            dataKey="cumulative"
+                            stroke="#3b82f6"
+                            fill="#3b82f6"
                             fillOpacity={0.3}
                             name="Cumulative Bookings"
                           />
-                          <Line 
-                            type="monotone" 
-                            dataKey="daily" 
-                            stroke="#ef4444" 
+                          <Line
+                            type="monotone"
+                            dataKey="daily"
+                            stroke="#ef4444"
                             strokeWidth={2}
                             name="Daily Bookings"
                           />
@@ -1330,15 +1330,15 @@ const ResearchClinicManagement = () => {
                       <ResponsiveContainer width="100%" height={300}>
                         <BarChart data={weeklyData}>
                           <CartesianGrid strokeDasharray="3 3" />
-                          <XAxis 
-                            dataKey="week" 
+                          <XAxis
+                            dataKey="week"
                             angle={-45}
                             textAnchor="end"
                             height={80}
                             fontSize={12}
                           />
                           <YAxis fontSize={12} />
-                          <Tooltip 
+                          <Tooltip
                             formatter={(value) => [value, 'Bookings']}
                             labelFormatter={(label) => `Week: ${label}`}
                           />
@@ -1363,22 +1363,22 @@ const ResearchClinicManagement = () => {
                       <ResponsiveContainer width="100%" height={300}>
                         <LineChart data={dailyData}>
                           <CartesianGrid strokeDasharray="3 3" />
-                          <XAxis 
-                            dataKey="formattedDate" 
+                          <XAxis
+                            dataKey="formattedDate"
                             angle={-45}
                             textAnchor="end"
                             height={80}
                             fontSize={12}
                           />
                           <YAxis fontSize={12} />
-                          <Tooltip 
+                          <Tooltip
                             formatter={(value) => [value, 'Bookings']}
                             labelFormatter={(label) => `Date: ${label}`}
                           />
-                          <Line 
-                            type="monotone" 
-                            dataKey="bookings" 
-                            stroke="#8b5cf6" 
+                          <Line
+                            type="monotone"
+                            dataKey="bookings"
+                            stroke="#8b5cf6"
                             strokeWidth={3}
                             dot={{ fill: '#8b5cf6', strokeWidth: 2, r: 4 }}
                             activeDot={{ r: 6 }}
@@ -1413,7 +1413,7 @@ const ResearchClinicManagement = () => {
                               <Cell key={`cell-${index}`} fill={entry.color} />
                             ))}
                           </Pie>
-                          <Tooltip 
+                          <Tooltip
                             formatter={(value, name) => [value, name]}
                           />
                         </PieChart>
@@ -1436,12 +1436,12 @@ const ResearchClinicManagement = () => {
                         <div key={status} className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
                             <div className="w-4 h-4 rounded-full" style={{
-                              backgroundColor: 
+                              backgroundColor:
                                 status === 'PENDING' ? '#fbbf24' :
-                                status === 'CONFIRMED' ? '#3b82f6' :
-                                status === 'COMPLETED' ? '#10b981' :
-                                status === 'CANCELLED' ? '#ef4444' :
-                                status === 'NO_SHOW' ? '#dc2626' : '#6b7280'
+                                  status === 'CONFIRMED' ? '#3b82f6' :
+                                    status === 'COMPLETED' ? '#10b981' :
+                                      status === 'CANCELLED' ? '#ef4444' :
+                                        status === 'NO_SHOW' ? '#dc2626' : '#6b7280'
                             }} />
                             <span className="font-medium">{status.replace('_', ' ')}</span>
                           </div>
@@ -1483,8 +1483,8 @@ const ResearchClinicManagement = () => {
                         return Object.values(uniqueStudentBookings).map(({ student, bookings }) => (
                           <div key={student.id} className="flex items-center justify-between p-3 border rounded-lg">
                             <div>
-                              <div className="font-medium">{student.user.name}</div>
-                              <div className="text-sm text-gray-600">{student.user.email}</div>
+                              <div className="font-medium">{student.studentUser?.fullName}</div>
+                              <div className="text-sm text-gray-600">{student.studentUser?.email}</div>
                               <div className="text-xs text-gray-500">
                                 {bookings.length} booking{bookings.length !== 1 ? 's' : ''}
                               </div>
@@ -1517,7 +1517,7 @@ const ResearchClinicManagement = () => {
               Set up a weekly research clinic schedule with multiple sessions
             </DialogDescription>
           </DialogHeader>
-          
+
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -1539,7 +1539,7 @@ const ResearchClinicManagement = () => {
                 />
               </div>
             </div>
-            
+
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="maxBookings">Max Bookings per Session</Label>
@@ -1562,7 +1562,7 @@ const ResearchClinicManagement = () => {
                 />
               </div>
             </div>
-            
+
             <div>
               <Label htmlFor="zoomLink">Zoom Link (Optional)</Label>
               <Input
@@ -1573,7 +1573,7 @@ const ResearchClinicManagement = () => {
                 onChange={(e) => setFormData({ ...formData, zoomLink: e.target.value })}
               />
             </div>
-            
+
             <div>
               <Label htmlFor="description">Description (Optional)</Label>
               <Textarea
@@ -1685,18 +1685,17 @@ const ResearchClinicManagement = () => {
                       {calendarStartDate && (
                         <div className="space-y-1">
                           {getGoogleCalendarWeeks(new Date(calendarStartDate), formData.numberOfWeeks).map((week, weekIndex) => (
-                            <div 
-                              key={weekIndex} 
-                              className={`grid grid-cols-7 gap-1 rounded-lg ${
-                                isCurrentWeek(week) ? 'bg-blue-50 border border-blue-200' : ''
-                              }`}
+                            <div
+                              key={weekIndex}
+                              className={`grid grid-cols-7 gap-1 rounded-lg ${isCurrentWeek(week) ? 'bg-blue-50 border border-blue-200' : ''
+                                }`}
                             >
                               {week.map((date, dayIndex) => {
-                                const isSelected = formData.selectedDaysOfWeek.includes(date.getDay()) && 
-                                                 !isPastDate(date);
+                                const isSelected = formData.selectedDaysOfWeek.includes(date.getDay()) &&
+                                  !isPastDate(date);
                                 const isTodayDate = isToday(date);
                                 const isPast = isPastDate(date);
-                                
+
                                 return (
                                   <div
                                     key={dayIndex}
@@ -1774,7 +1773,7 @@ const ResearchClinicManagement = () => {
               >
                 Cancel
               </Button>
-              <Button 
+              <Button
                 onClick={handleCreateClinicDay}
                 disabled={isCreating}
               >
@@ -1801,7 +1800,7 @@ const ResearchClinicManagement = () => {
               Update weekly clinic schedule details
             </DialogDescription>
           </DialogHeader>
-          
+
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -1823,7 +1822,7 @@ const ResearchClinicManagement = () => {
                 />
               </div>
             </div>
-            
+
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="edit-maxBookings">Max Bookings per Session</Label>
@@ -1846,7 +1845,7 @@ const ResearchClinicManagement = () => {
                 />
               </div>
             </div>
-            
+
             <div>
               <Label htmlFor="edit-zoomLink">Zoom Link (Optional)</Label>
               <Input
@@ -1857,7 +1856,7 @@ const ResearchClinicManagement = () => {
                 onChange={(e) => setFormData({ ...formData, zoomLink: e.target.value })}
               />
             </div>
-            
+
             <div>
               <Label htmlFor="edit-description">Description (Optional)</Label>
               <Textarea
@@ -1969,18 +1968,17 @@ const ResearchClinicManagement = () => {
                       {calendarStartDate && (
                         <div className="space-y-1">
                           {getGoogleCalendarWeeks(new Date(calendarStartDate), formData.numberOfWeeks).map((week, weekIndex) => (
-                            <div 
-                              key={weekIndex} 
-                              className={`grid grid-cols-7 gap-1 rounded-lg ${
-                                isCurrentWeek(week) ? 'bg-blue-50 border border-blue-200' : ''
-                              }`}
+                            <div
+                              key={weekIndex}
+                              className={`grid grid-cols-7 gap-1 rounded-lg ${isCurrentWeek(week) ? 'bg-blue-50 border border-blue-200' : ''
+                                }`}
                             >
                               {week.map((date, dayIndex) => {
-                                const isSelected = formData.selectedDaysOfWeek.includes(date.getDay()) && 
-                                                 !isPastDate(date);
+                                const isSelected = formData.selectedDaysOfWeek.includes(date.getDay()) &&
+                                  !isPastDate(date);
                                 const isTodayDate = isToday(date);
                                 const isPast = isPastDate(date);
-                                
+
                                 return (
                                   <div
                                     key={dayIndex}
@@ -2058,7 +2056,7 @@ const ResearchClinicManagement = () => {
               >
                 Cancel
               </Button>
-              <Button 
+              <Button
                 onClick={handleUpdateClinicDay}
                 disabled={isUpdating}
               >
@@ -2085,20 +2083,20 @@ const ResearchClinicManagement = () => {
               View and update booking information
             </DialogDescription>
           </DialogHeader>
-          
+
           {selectedBooking && (
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label>Student Name</Label>
-                  <p className="text-sm font-medium">{selectedBooking.student.user.name}</p>
+                  <p className="text-sm font-medium">{selectedBooking.student?.studentUser?.fullName}</p>
                 </div>
                 <div>
                   <Label>Student Email</Label>
-                  <p className="text-sm font-medium">{selectedBooking.student.user.email}</p>
+                  <p className="text-sm font-medium">{selectedBooking.student?.studentUser?.email}</p>
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label>Clinic Date</Label>
@@ -2111,7 +2109,7 @@ const ResearchClinicManagement = () => {
                   </p>
                 </div>
               </div>
-              
+
               <div>
                 <Label>Status</Label>
                 <Select
@@ -2137,7 +2135,7 @@ const ResearchClinicManagement = () => {
                   </div>
                 )}
               </div>
-              
+
               <div>
                 <Label>Notes</Label>
                 <Textarea
@@ -2151,7 +2149,7 @@ const ResearchClinicManagement = () => {
                   placeholder="Add notes about this booking..."
                 />
               </div>
-              
+
               <div>
                 <Label>Feedback</Label>
                 <Textarea
@@ -2165,7 +2163,7 @@ const ResearchClinicManagement = () => {
                   placeholder="Add feedback after the session..."
                 />
               </div>
-              
+
               <div className="flex gap-2 justify-end">
                 <Button
                   variant="outline"
@@ -2203,4 +2201,3 @@ const ResearchClinicManagement = () => {
 };
 
 export default ResearchClinicManagement;
-   

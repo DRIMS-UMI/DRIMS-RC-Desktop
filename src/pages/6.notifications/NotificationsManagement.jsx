@@ -146,13 +146,41 @@ const NotificationsManagement = () => {
         },
       },
       {
+        accessorKey: "scheduledFor",
+        header: "Scheduled For",
+        cell: (info) => {
+          const scheduledFor = info.getValue();
+          return (
+            <span className="text-xs font-[Inter-Medium] text-gray-700">
+              {scheduledFor
+                ? new Date(scheduledFor).toLocaleString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })
+                : "Not scheduled"}
+            </span>
+          );
+        },
+      },
+      {
         accessorKey: "sentAt",
         header: "Sent At",
         cell: (info) => {
           const sentAt = info.getValue();
           return (
             <span className="text-xs font-[Inter-Medium] text-gray-700">
-              {sentAt ? new Date(sentAt).toLocaleString() : "Not sent yet"}
+              {sentAt
+                ? new Date(sentAt).toLocaleString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })
+                : "Not sent yet"}
             </span>
           );
         },

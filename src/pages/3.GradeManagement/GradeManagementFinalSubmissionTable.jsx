@@ -1116,7 +1116,8 @@ const GradeManagementFinalSubmissionTable = ({ data, pageSize, setPageSize, curr
       }
     }
 
-    XLSX.utils.book_append_sheet(wb, ws, schoolName);
+    const sheetName = schoolName.length > 31 ? schoolName.substring(0, 31) : schoolName;
+    XLSX.utils.book_append_sheet(wb, ws, sheetName);
 
     // Generate Excel file as base64 string
     const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'base64' });
@@ -1224,7 +1225,8 @@ const GradeManagementFinalSubmissionTable = ({ data, pageSize, setPageSize, curr
       }
     }
 
-    XLSX.utils.book_append_sheet(wb, ws, schoolName);
+    const sheetName = schoolName.length > 31 ? schoolName.substring(0, 31) : schoolName;
+    XLSX.utils.book_append_sheet(wb, ws, sheetName);
     XLSX.writeFile(wb, `${schoolName}_Results_${currentAcademicYear}_${format(new Date(), "yyyy-MM-dd")}.xlsx`);
   };
 

@@ -15,12 +15,12 @@ import { deleteSchoolService } from "../../store/tanstackStore/services/api";
 import { queryClient } from "../../utils/tanstack";
 
 import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-  } from "@/components/ui/tooltip";
-  import { Icon } from "@iconify-icon/react";
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Icon } from "@iconify-icon/react";
 
 // Info icon helper component
 const InfoIconHelper = ({ tooltip }) => {
@@ -107,11 +107,10 @@ const TabPanel = ({ activeTab, setActiveTab, tabs }) => {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`py-4 px-1 border-b-2 ${
-              activeTab === tab.id
-                ? "border-[#27357E] text-[#27357E]"
-                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-            } font-medium text-sm focus:outline-none`}
+            className={`py-4 px-1 border-b-2 ${activeTab === tab.id
+              ? "border-[#27357E] text-[#27357E]"
+              : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              } font-medium text-sm focus:outline-none`}
           >
             <span>{tab.label}</span>
             {tab.count && (
@@ -185,20 +184,20 @@ const FacultyTable = ({
   const effectiveColumnVisibility = columnVisibility || defaultColumnVisibility;
 
   const columns = [
-      {
-        accessorKey: 'name',
-        header: () => <span className="text-sm">Fullname</span>,
-        cell: info => <div className="text-sm">{info.getValue()}</div>
-      },
-      {
-        accessorKey: 'workEmail',
-        header: () => <span className="text-sm">Email Address</span>,
-        cell: info => <div className="text-sm">{info.getValue()}</div>
-      },
-      {
-        accessorKey: 'schoolCode',
-        header: () => <span className="text-sm">School Code</span>,
-        cell: info => <div className="text-sm flex flex-row text-center items-center gap-1 justify-start"> <span>{info.row.original.school.code}</span>   <TooltipProvider>
+    {
+      accessorKey: 'name',
+      header: () => <span className="text-sm">Fullname</span>,
+      cell: info => <div className="text-sm">{info.getValue()}</div>
+    },
+    {
+      accessorKey: 'workEmail',
+      header: () => <span className="text-sm">Email Address</span>,
+      cell: info => <div className="text-sm">{info.getValue()}</div>
+    },
+    {
+      accessorKey: 'schoolCode',
+      header: () => <span className="text-sm">School Code</span>,
+      cell: info => <div className="text-sm flex flex-row text-center items-center gap-1 justify-start"> <span>{info.row.original.school?.code}</span>   <TooltipProvider>
         <Tooltip>
           <TooltipTrigger>
             <Icon
@@ -206,53 +205,53 @@ const FacultyTable = ({
               className="w-4 h-4 mt-1 text-gray-400"
             />
           </TooltipTrigger>
-          <TooltipContent>{info.row.original.school.name}</TooltipContent>
+          <TooltipContent>{info.row.original.school?.name}</TooltipContent>
         </Tooltip>
       </TooltipProvider></div>
-      },
-      {
-        accessorKey: 'facultyType',
-        header: () => <span className="text-sm">Role</span>,
-        cell: info => (
-          <div className="inline-flex h-hug24px rounded-md border py-4px px-9px bg-accent2-300 items-center justify-center whitespace-nowrap text-sm capitalize">
-            {info.getValue()}
-          </div>
-        )
-      },
-     
-      {
-        accessorKey: 'campus',
-        header: () => <span className="text-sm">Campus</span>,
-        cell: info => (
-          <div className="inline-flex rounded-md py-4px px-9px  items-center justify-center whitespace-nowrap text-sm capitalize">
-            {info.row.original.campus.name}
-          </div>
-        )
-      },
-      {
-        id: 'actions',
-        header: () => <span className="text-sm"> </span>,
-        cell: info => (
-            <>
-            {
-                info.row.original.facultyType === 'supervisor' ? ( <Link 
-                    to={`/faculty/supervisor/profile/${info.row.original.id}`}
-                    className="rounded border border-semantic-bg-border shadow-sm py-4px px-8px hover:bg-gray-50 text-sm"
-                  >
-                        Open
-                  </Link>): (
-                    <Link 
-                    to={`/faculty/profile/${info.row.original.id}`}
-                    className="rounded border border-semantic-bg-border shadow-sm py-4px px-8px hover:bg-gray-50 text-sm"
-                  >
-                        Open
-                  </Link>
-                )
-            }
-            </>
-         
-        )
-      }
+    },
+    {
+      accessorKey: 'facultyType',
+      header: () => <span className="text-sm">Role</span>,
+      cell: info => (
+        <div className="inline-flex h-hug24px rounded-md border py-4px px-9px bg-accent2-300 items-center justify-center whitespace-nowrap text-sm capitalize">
+          {info.getValue()}
+        </div>
+      )
+    },
+
+    {
+      accessorKey: 'campus',
+      header: () => <span className="text-sm">Campus</span>,
+      cell: info => (
+        <div className="inline-flex rounded-md py-4px px-9px  items-center justify-center whitespace-nowrap text-sm capitalize">
+          {info.row.original.campus.name}
+        </div>
+      )
+    },
+    {
+      id: 'actions',
+      header: () => <span className="text-sm"> </span>,
+      cell: info => (
+        <>
+          {
+            info.row.original.facultyType === 'supervisor' ? (<Link
+              to={`/faculty/supervisor/profile/${info.row.original.id}`}
+              className="rounded border border-semantic-bg-border shadow-sm py-4px px-8px hover:bg-gray-50 text-sm"
+            >
+              Open
+            </Link>) : (
+              <Link
+                to={`/faculty/profile/${info.row.original.id}`}
+                className="rounded border border-semantic-bg-border shadow-sm py-4px px-8px hover:bg-gray-50 text-sm"
+              >
+                Open
+              </Link>
+            )
+          }
+        </>
+
+      )
+    }
   ];
 
   const table = useReactTable({
@@ -318,25 +317,25 @@ const FacultyTable = ({
           setPageSize={setPageSize}
           setPageIndex={setPageIndex}
         /> */}
-        {!isReadOnly && (
-          <div className="flex items-center gap-4">
-            <Link
-              to="/faculty/add"
-              className="inline-flex items-center px-4 py-2 bg-[#27357E] text-white rounded-lg text-sm font-medium hover:bg-[#1F2861]"
-            >
-              Add Faculty
-              <span className="ml-2">+</span>
-            </Link>
+          {!isReadOnly && (
+            <div className="flex items-center gap-4">
+              <Link
+                to="/faculty/add"
+                className="inline-flex items-center px-4 py-2 bg-[#27357E] text-white rounded-lg text-sm font-medium hover:bg-[#1F2861]"
+              >
+                Add Faculty
+                <span className="ml-2">+</span>
+              </Link>
 
-            <Link
-              to="/faculty/supervisor/add"
-              className="inline-flex items-center px-4 py-2 bg-[#27357E] text-white rounded-lg text-sm font-medium hover:bg-[#1F2861]"
-            >
-              Add Supervisor
-              <span className="ml-2">+</span>
-            </Link>
-          </div>
-        )}
+              <Link
+                to="/faculty/supervisor/add"
+                className="inline-flex items-center px-4 py-2 bg-[#27357E] text-white rounded-lg text-sm font-medium hover:bg-[#1F2861]"
+              >
+                Add Supervisor
+                <span className="ml-2">+</span>
+              </Link>
+            </div>
+          )}
         </div>
       </div>
 
@@ -354,9 +353,9 @@ const FacultyTable = ({
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                   </th>
                 ))}
               </tr>
@@ -378,52 +377,51 @@ const FacultyTable = ({
 
       {/* Pagination */}
       <div className="px-6 py-3 flex items-center justify-between border-t border-gray-200 bg-white">
-      <div className="flex items-center text-sm text-gray-500">
-        Showing{' '}
-        <span className="font-medium mx-1">
-          {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1}
-        </span>
-        to{' '}
-        <span className="font-medium mx-1">
-          {Math.min(
-            (table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize,
-            table.getPrePaginationRowModel().rows.length
-          )}
-        </span>
-        of{' '}
-        <span className="font-medium mx-1">{table.getPrePaginationRowModel().rows.length}</span>{' '}
-        results
-      </div>
-      <div className="flex items-center gap-2">
-        <button
-          className="border rounded p-1 text-sm disabled:opacity-50"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Previous
-        </button>
-        {Array.from({ length: table.getPageCount() }, (_, i) => i + 1).map(pageNumber => (
+        <div className="flex items-center text-sm text-gray-500">
+          Showing{' '}
+          <span className="font-medium mx-1">
+            {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1}
+          </span>
+          to{' '}
+          <span className="font-medium mx-1">
+            {Math.min(
+              (table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize,
+              table.getPrePaginationRowModel().rows.length
+            )}
+          </span>
+          of{' '}
+          <span className="font-medium mx-1">{table.getPrePaginationRowModel().rows.length}</span>{' '}
+          results
+        </div>
+        <div className="flex items-center gap-2">
           <button
-            key={pageNumber}
-            className={`w-8 h-8 rounded text-sm ${
-              pageNumber === table.getState().pagination.pageIndex + 1
+            className="border rounded p-1 text-sm disabled:opacity-50"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            Previous
+          </button>
+          {Array.from({ length: table.getPageCount() }, (_, i) => i + 1).map(pageNumber => (
+            <button
+              key={pageNumber}
+              className={`w-8 h-8 rounded text-sm ${pageNumber === table.getState().pagination.pageIndex + 1
                 ? 'bg-blue-50 text-blue-600 font-medium'
                 : 'text-gray-500'
-            }`}
-            onClick={() => table.setPageIndex(pageNumber - 1)}
+                }`}
+              onClick={() => table.setPageIndex(pageNumber - 1)}
+            >
+              {pageNumber}
+            </button>
+          ))}
+          <button
+            className="border rounded p-1 text-sm disabled:opacity-50"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
           >
-            {pageNumber}
+            Next
           </button>
-        ))}
-        <button
-          className="border rounded p-1 text-sm disabled:opacity-50"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Next
-        </button>
+        </div>
       </div>
-    </div>
 
     </div>
   );
