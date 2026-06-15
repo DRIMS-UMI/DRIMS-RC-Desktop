@@ -13,7 +13,8 @@ import {
   RiMedicineBottleLine,
   RiExchangeLine,
   RiBook2Line,
-  RiHistoryLine
+  RiHistoryLine,
+  RiMessage3Line
 } from 'react-icons/ri';
 import { useGetLoggedInUserDetails } from '../../store/tanstackStore/services/queries';
 import { HiOutlineUserGroup, HiOutlineAcademicCap } from 'react-icons/hi';
@@ -31,6 +32,7 @@ const menuItems = {
     { name: 'Notifications', icon: RiNotification3Line, path: '/notifications' },
     { name: 'Research Clinic', icon: RiMedicineBottleLine, path: '/research-clinic' },
     { name: 'Reallocation Monitoring', icon: RiExchangeLine, path: '/reallocation-monitoring' },
+    { name: 'Support Tickets', icon: RiMessage3Line, path: '/support-tickets' },
   ],
   otherOptions: [
 
@@ -76,6 +78,7 @@ const NavigationMenu = () => {
   const role = user?.user?.role;
 
   const filteredMainActivities = menuItems.mainActivities.filter(item => {
+    if (item.name === 'Support Tickets') return role === 'SUPERADMIN' || role === 'MANAGER';
     // Both SuperAdmin and Auditor see these, but Research Admin might not see some
     return true; // Keep existing visibility for now
   });

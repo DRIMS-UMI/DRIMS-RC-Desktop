@@ -69,7 +69,8 @@ export const ROUTES = {
     ROOT: '/reallocation-monitoring',
     LIST: '/reallocation-monitoring'
   },
-  ACTIVITIES: '/activities'
+  ACTIVITIES: '/activities',
+  SUPPORT_TICKETS: '/support-tickets'
 };
 
 export default ROUTES;

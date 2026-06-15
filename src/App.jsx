@@ -71,6 +71,7 @@ import ImportAcmisStudent from "./pages/2.student/ImportAcmisStudent";
 import CourseManagement from "./pages/15.CourseManagement/CourseManagement";
 import AddCourse from "./pages/15.CourseManagement/AddCourse";
 import SpecializationManagement from "./pages/15.CourseManagement/SpecializationManagement";
+import SupportTickets from "./pages/16.SupportTickets/SupportTickets";
 import ActivityLogs from "./pages/9.roles/ActivityLogs";
 // PublicRoute: Redirects authenticated users away from public pages (like login)
 // If user is authenticated, redirects to dashboard
@@ -238,6 +239,7 @@ const AppRoutes = () => {
         <Route path={"/users"} element={<UserRolesManagement />} />
         <Route path={"/users/:userId"} element={<UserManagementView />} />
         <Route path={ROUTES.ACTIVITIES} element={<ActivityLogs />} />
+        <Route path={ROUTES.SUPPORT_TICKETS} element={<SupportTickets />} />
         <Route path={ROUTES.TABLES} element={<TableBuilder />} />
         <Route path={ROUTES.SETTINGS} element={<Settings />} />
       </Route>

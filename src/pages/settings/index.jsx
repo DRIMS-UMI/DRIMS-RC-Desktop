@@ -53,7 +53,8 @@ const Settings = () => {
     name: '',
     email: '',
     phone: '',
-    designation: ''
+    designation: '',
+    disableEmailNotifications: false
   });
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [passwordModalOpen, setPasswordModalOpen] = useState(false);
@@ -105,7 +106,8 @@ const Settings = () => {
         name: userData?.user?.name || '',
         email: userData?.user?.email || '',
         phone: userData?.user?.phone || '',
-        designation: userData?.user?.designation || ''
+        designation: userData?.user?.designation || '',
+        disableEmailNotifications: userData?.user?.disableEmailNotifications || false
       };
       setUserDetails(details);
       setEditedUserDetails(details);
@@ -214,7 +216,7 @@ const Settings = () => {
         </SettingSection>
 
         {/* Notification Settings */}
-        {/* <SettingSection icon={RiNotificationLine} title="Notification Settings">
+        <SettingSection icon={RiNotificationLine} title="Notification Settings">
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
@@ -222,22 +224,32 @@ const Settings = () => {
                 <p className="text-sm text-semantic-text-secondary">Receive email updates</p>
               </div>
               <label className="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" className="sr-only peer" defaultChecked />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-100 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-500"></div>
-              </label>
-            </div>
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-sm font-medium text-semantic-text-primary">Push Notifications</h3>
-                <p className="text-sm text-semantic-text-secondary">Receive push notifications</p>
-              </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" className="sr-only peer" />
+                <input 
+                  type="checkbox" 
+                  className="sr-only peer" 
+                  checked={!userDetails.disableEmailNotifications}
+                  onChange={async (e) => {
+                    const newDisableStatus = !e.target.checked;
+                    // Optimistically update
+                    setUserDetails(prev => ({...prev, disableEmailNotifications: newDisableStatus}));
+                    setEditedUserDetails(prev => ({...prev, disableEmailNotifications: newDisableStatus}));
+                    try {
+                      await updateProfileMutation.mutateAsync({
+                        ...userDetails,
+                        disableEmailNotifications: newDisableStatus
+                      });
+                    } catch (error) {
+                      // Revert on error
+                      setUserDetails(prev => ({...prev, disableEmailNotifications: !newDisableStatus}));
+                      setEditedUserDetails(prev => ({...prev, disableEmailNotifications: !newDisableStatus}));
+                    }
+                  }}
+                />
                 <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-100 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-500"></div>
               </label>
             </div>
           </div>
-        </SettingSection> */}
+        </SettingSection>
 
         {/* System Settings */}
         {/* <SettingSection icon={RiGlobalLine} title="System Settings">
