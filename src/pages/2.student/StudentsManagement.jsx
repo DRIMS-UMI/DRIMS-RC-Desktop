@@ -14,6 +14,7 @@ import { ROUTES } from '../../config/routes';
 import { useGetAllStudents } from '../../store/tanstackStore/services/queries';
 import { useGetDashboardStats } from "@/store/tanstackStore/services/queries";
 import { useIsReadOnly } from "../../hooks/useIsReadOnly";
+import { getFuzzyScore } from "../../utils/fuzzySearch";
 
 const StudentsManagement = () => {
   const navigate = useNavigate();
@@ -38,6 +39,7 @@ const StudentsManagement = () => {
   // Manage column visibility state
   const [columnVisibility, setColumnVisibility] = useState({
     fullname: true,
+    registrationNumber: true,
     email: true,
     campus: true,
     schoolCode: true,
@@ -55,16 +57,25 @@ const StudentsManagement = () => {
 
     // Filter students based on search, category and program level using useMemo
     const filteredStudents = useMemo(() => {
-      return (studentsData?.students || []).filter(
-        (student) => {
+      const results = (studentsData?.students || [])
+        .map(student => {
+          const nameScore = getFuzzyScore(student?.fullName, searchTerm);
+          const regScore = getFuzzyScore(student?.registrationNumber, searchTerm);
+          const maxScore = Math.max(nameScore, regScore);
+          return { student, score: maxScore };
+        })
+        .filter(({ student, score }) => {
           const matchesCategory = selectedCategory === "All Students" || 
                                 student?.programLevel === selectedCategory;
           
-          const matchesSearch = student?.fullName?.toLowerCase()?.includes(searchTerm?.toLowerCase());
-          
-          return matchesCategory && matchesSearch;
-        }
-      );
+          return matchesCategory && score >= 0.7;
+        });
+
+      if (searchTerm) {
+        results.sort((a, b) => b.score - a.score);
+      }
+
+      return results.map(r => r.student);
     }, [studentsData?.students, selectedCategory, searchTerm]);
   
     // Pagination logic with useMemo

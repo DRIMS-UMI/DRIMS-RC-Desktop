@@ -51,6 +51,15 @@ const StudentTable = ({ students, columnVisibility, setColumnVisibility }) => {
         </span>
       )
     },
+    columnVisibility?.registrationNumber && {
+      accessorKey: "registrationNumber",
+      header: "Registration Number",
+      cell: ({ row }) => (
+        <span>
+          {row.original.registrationNumber || "N/A"}
+        </span>
+      )
+    },
     columnVisibility?.email && {
       accessorKey: "email",
       header: "Email Address"
