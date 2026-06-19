@@ -127,7 +127,7 @@ const SupervisorTasks = ({ supervisorData }) => {
 
       return {
         id: student.id,
-        fullname: `${student.firstName} ${student.lastName}`,
+        fullname: student.fullName,
         email: student.email,
         category: student.programLevel,
         status: currentStatus?.definition?.name || "Unknown",
