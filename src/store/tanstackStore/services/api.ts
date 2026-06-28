@@ -1309,9 +1309,9 @@ export const getDetailedEvaluationsService = async (params = {}) => {
 
 /* ********** END OF RESEARCH REQUEST MANAGEMENT ********** */
 
-export const createSupervisorFromStaffService = async (staffMemberId: string) => {
+export const createSupervisorFromStaffService = async (staffMemberId: string, password?: string) => {
     try {
-        const response = await apiRequest.post(`/management/staff/${staffMemberId}/convert-to-supervisor`);
+        const response = await apiRequest.post(`/management/staff/${staffMemberId}/convert-to-supervisor`, { password });
         return response.data;
     } catch (error) {
         errorHandling(error);
