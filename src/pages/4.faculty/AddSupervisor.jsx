@@ -32,6 +32,7 @@ const AddSupervisor = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStaffMember, setSelectedStaffMember] = useState(null);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [tempPassword, setTempPassword] = useState("");
 
   // Fetch staff members who don't have supervisorId and are internal
   const { data: staffMembersData, isLoading } = useGetStaffMembersForSupervisor();
@@ -104,7 +105,7 @@ const AddSupervisor = () => {
 
   // Mutation for creating supervisor from staff member
   const createSupervisorMutation = useMutation({
-    mutationFn: (staffMemberId) => createSupervisorFromStaffService(staffMemberId),
+    mutationFn: ({staffMemberId, password}) => createSupervisorFromStaffService(staffMemberId, password),
     onSuccess: (data) => {
       toast.success(data?.message || "Supervisor created successfully", {
         duration: 5000,
@@ -118,6 +119,7 @@ const AddSupervisor = () => {
       queryClient.invalidateQueries(['supervisor']);
       queryClient.invalidateQueries(['staffMembersForSupervisor']);
       setShowConfirmDialog(false);
+      setTempPassword("");
       navigate('/faculty', { replace: true });
     },
     onError: (error) => {
@@ -151,12 +153,16 @@ const AddSupervisor = () => {
 
   const handleCreateSupervisor = (staffMember) => {
     setSelectedStaffMember(staffMember);
+    setTempPassword("");
     setShowConfirmDialog(true);
   };
 
   const confirmCreateSupervisor = () => {
     if (selectedStaffMember) {
-      createSupervisorMutation.mutate(selectedStaffMember.id);
+      createSupervisorMutation.mutate({
+        staffMemberId: selectedStaffMember.id,
+        password: tempPassword || undefined
+      });
     }
   };
 
@@ -359,6 +365,22 @@ const AddSupervisor = () => {
               <p className="text-sm text-gray-600 mt-4">
                 This will create a new supervisor account and assign the supervisor role to this staff member.
               </p>
+              
+              <div className="mt-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Temporary Password (Optional)
+                </label>
+                <Input
+                  type="text"
+                  placeholder="Enter a temporary password"
+                  value={tempPassword}
+                  onChange={(e) => setTempPassword(e.target.value)}
+                  className="w-full"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  If left blank, a random password will be generated. The supervisor can change this later.
+                </p>
+              </div>
             </div>
             <div className="flex justify-end gap-3">
               <Button

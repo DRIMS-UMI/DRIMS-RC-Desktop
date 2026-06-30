@@ -14,6 +14,8 @@ import { Switch } from '@/components/ui/switch';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { useUpdateStaffMember, useGetAllCampuses, useGetAllSchools, useGetAllDepartments } from '../../store/tanstackStore/services/queries';
+import PhoneInput from 'react-phone-number-input';
+import 'react-phone-number-input/style.css';
 
 const EditStaffMember = ({ staffMember, onSuccess, onCancel }) => {
   const [formData, setFormData] = useState(() => {
@@ -22,7 +24,9 @@ const EditStaffMember = ({ staffMember, onSuccess, onCancel }) => {
         name: staffMember.name || '',
         title: staffMember.title || '',
         email: staffMember.email || '',
+        secondaryEmail: staffMember.secondaryEmail || '',
         phone: staffMember.phone || '',
+        secondaryPhone: staffMember.secondaryPhone || '',
         designation: staffMember.designation || '',
         specialization: staffMember.specialization || '',
         qualifications: staffMember.qualifications || '',
@@ -50,7 +54,9 @@ const EditStaffMember = ({ staffMember, onSuccess, onCancel }) => {
       name: '',
       title: '',
       email: '',
+      secondaryEmail: '',
       phone: '',
+      secondaryPhone: '',
       designation: '',
       specialization: '',
       qualifications: '',
@@ -93,13 +99,31 @@ const EditStaffMember = ({ staffMember, onSuccess, onCancel }) => {
   // Mutation for updating staff member
   const updateStaffMemberMutation = useUpdateStaffMember();
 
+  const STANDARD_TITLES = ['Prof.', 'Assoc. Prof.', 'Dr.', 'Mr.', 'Mrs.', 'Ms.'];
+  
+  const [customTitle, setCustomTitle] = useState(() => {
+    if (staffMember?.title && !STANDARD_TITLES.includes(staffMember.title)) {
+      return staffMember.title;
+    }
+    return '';
+  });
+
+  useEffect(() => {
+    if (formData.title && !STANDARD_TITLES.includes(formData.title) && formData.title !== 'Other') {
+       setCustomTitle(formData.title);
+       setFormData(prev => ({ ...prev, title: 'Other' }));
+    }
+  }, []);
+
   useEffect(() => {
     if (staffMember) {
       const newFormData = {
         name: staffMember.name || '',
         title: staffMember.title || '',
         email: staffMember.email || '',
+        secondaryEmail: staffMember.secondaryEmail || '',
         phone: staffMember.phone || '',
+        secondaryPhone: staffMember.secondaryPhone || '',
         designation: staffMember.designation || '',
         specialization: staffMember.specialization || '',
         qualifications: staffMember.qualifications || '',
@@ -123,6 +147,11 @@ const EditStaffMember = ({ staffMember, onSuccess, onCancel }) => {
         panelistId: staffMember.panelistId || undefined
       };
       
+      if (staffMember.title && !STANDARD_TITLES.includes(staffMember.title)) {
+        setCustomTitle(staffMember.title);
+        newFormData.title = 'Other';
+      }
+
       setFormData(newFormData);
     }
   }, [staffMember?.id]); // Only depend on the staff member ID, not the entire object
@@ -144,7 +173,9 @@ const EditStaffMember = ({ staffMember, onSuccess, onCancel }) => {
       name: staffMember.name || '',
       title: staffMember.title || '',
       email: staffMember.email || '',
+      secondaryEmail: staffMember.secondaryEmail || '',
       phone: staffMember.phone || '',
+      secondaryPhone: staffMember.secondaryPhone || '',
       designation: staffMember.designation || '',
       specialization: staffMember.specialization || '',
       qualifications: staffMember.qualifications || '',
@@ -199,6 +230,10 @@ const EditStaffMember = ({ staffMember, onSuccess, onCancel }) => {
       })
     };
 
+    if (formData.title === 'Other' && customTitle) {
+      submitData.title = customTitle;
+    }
+
     updateStaffMemberMutation.mutate({
       id: staffMember.id,
       data: submitData
@@ -252,13 +287,33 @@ const EditStaffMember = ({ staffMember, onSuccess, onCancel }) => {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="title">Title</Label>
-                <Input
-                  id="title"
+                <Select
                   value={formData.title}
-                  onChange={(e) => handleInputChange('title', e.target.value)}
-                  placeholder="e.g., Dr., Prof., Mr., Ms."
+                  onValueChange={(value) => handleInputChange('title', value)}
                   disabled={updateStaffMemberMutation.isPending}
-                />
+                >
+                  <SelectTrigger id="title">
+                    <SelectValue placeholder="Select title" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Prof.">Prof.</SelectItem>
+                    <SelectItem value="Assoc. Prof.">Assoc. Prof.</SelectItem>
+                    <SelectItem value="Dr.">Dr.</SelectItem>
+                    <SelectItem value="Mr.">Mr.</SelectItem>
+                    <SelectItem value="Mrs.">Mrs.</SelectItem>
+                    <SelectItem value="Ms.">Ms.</SelectItem>
+                    <SelectItem value="Other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+                {formData.title === 'Other' && (
+                  <Input
+                    className="mt-2"
+                    placeholder="Specify title"
+                    value={customTitle}
+                    onChange={(e) => setCustomTitle(e.target.value)}
+                    disabled={updateStaffMemberMutation.isPending}
+                  />
+                )}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email">Email Address *</Label>
@@ -273,12 +328,37 @@ const EditStaffMember = ({ staffMember, onSuccess, onCancel }) => {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="phone">Phone Number</Label>
+                <Label htmlFor="secondaryEmail">Secondary Email</Label>
                 <Input
+                  id="secondaryEmail"
+                  type="email"
+                  value={formData.secondaryEmail}
+                  onChange={(e) => handleInputChange('secondaryEmail', e.target.value)}
+                  placeholder="Enter secondary email"
+                  disabled={updateStaffMemberMutation.isPending}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="phone">Phone Number</Label>
+                <PhoneInput
                   id="phone"
+                  international
+                  defaultCountry="UG"
                   value={formData.phone}
-                  onChange={(e) => handleInputChange('phone', e.target.value)}
-                  placeholder="Enter phone number"
+                  onChange={(value) => handleInputChange('phone', value)}
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  disabled={updateStaffMemberMutation.isPending}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="secondaryPhone">Secondary Phone Number</Label>
+                <PhoneInput
+                  id="secondaryPhone"
+                  international
+                  defaultCountry="UG"
+                  value={formData.secondaryPhone}
+                  onChange={(value) => handleInputChange('secondaryPhone', value)}
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   disabled={updateStaffMemberMutation.isPending}
                 />
               </div>

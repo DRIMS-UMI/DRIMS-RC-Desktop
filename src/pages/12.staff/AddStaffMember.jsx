@@ -15,13 +15,17 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { toast } from 'sonner';
 import { useCreateStaffMember, useGetAllCampuses, useGetAllSchools, useGetAllDepartments } from '../../store/tanstackStore/services/queries';
+import PhoneInput from 'react-phone-number-input';
+import 'react-phone-number-input/style.css';
 
 const AddStaffMember = ({ onSuccess, onCancel }) => {
   const [formData, setFormData] = useState({
     name: '',
     title: '',
     email: '',
+    secondaryEmail: '',
     phone: '',
+    secondaryPhone: '',
     designation: '',
     specialization: '',
     qualifications: '',
@@ -44,6 +48,8 @@ const AddStaffMember = ({ onSuccess, onCancel }) => {
     reviewerId: undefined,
     panelistId: undefined
   });
+
+  const [customTitle, setCustomTitle] = useState('');
 
   // Queries for institutional data
   const { data: campuses } = useGetAllCampuses();
@@ -71,7 +77,9 @@ const AddStaffMember = ({ onSuccess, onCancel }) => {
       name: '',
       title: '',
       email: '',
+      secondaryEmail: '',
       phone: '',
+      secondaryPhone: '',
       designation: '',
       specialization: '',
       qualifications: '',
@@ -126,6 +134,10 @@ const AddStaffMember = ({ onSuccess, onCancel }) => {
       })
     };
 
+    if (formData.title === 'Other' && customTitle) {
+      submitData.title = customTitle;
+    }
+
     createStaffMemberMutation.mutate(submitData, {
       onSuccess: () => {
         toast.success('Staff member created successfully');
@@ -167,13 +179,33 @@ const AddStaffMember = ({ onSuccess, onCancel }) => {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="title">Title</Label>
-                <Input
-                  id="title"
+                <Select
                   value={formData.title}
-                  onChange={(e) => handleInputChange('title', e.target.value)}
-                  placeholder="e.g., Dr., Prof., Mr., Ms."
+                  onValueChange={(value) => handleInputChange('title', value)}
                   disabled={createStaffMemberMutation.isPending}
-                />
+                >
+                  <SelectTrigger id="title">
+                    <SelectValue placeholder="Select title" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Prof.">Prof.</SelectItem>
+                    <SelectItem value="Assoc. Prof.">Assoc. Prof.</SelectItem>
+                    <SelectItem value="Dr.">Dr.</SelectItem>
+                    <SelectItem value="Mr.">Mr.</SelectItem>
+                    <SelectItem value="Mrs.">Mrs.</SelectItem>
+                    <SelectItem value="Ms.">Ms.</SelectItem>
+                    <SelectItem value="Other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+                {formData.title === 'Other' && (
+                  <Input
+                    className="mt-2"
+                    placeholder="Specify title"
+                    value={customTitle}
+                    onChange={(e) => setCustomTitle(e.target.value)}
+                    disabled={createStaffMemberMutation.isPending}
+                  />
+                )}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email">Email Address *</Label>
@@ -188,12 +220,37 @@ const AddStaffMember = ({ onSuccess, onCancel }) => {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="phone">Phone Number</Label>
+                <Label htmlFor="secondaryEmail">Secondary Email</Label>
                 <Input
+                  id="secondaryEmail"
+                  type="email"
+                  value={formData.secondaryEmail}
+                  onChange={(e) => handleInputChange('secondaryEmail', e.target.value)}
+                  placeholder="Enter secondary email"
+                  disabled={createStaffMemberMutation.isPending}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="phone">Phone Number</Label>
+                <PhoneInput
                   id="phone"
+                  international
+                  defaultCountry="UG"
                   value={formData.phone}
-                  onChange={(e) => handleInputChange('phone', e.target.value)}
-                  placeholder="Enter phone number"
+                  onChange={(value) => handleInputChange('phone', value)}
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  disabled={createStaffMemberMutation.isPending}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="secondaryPhone">Secondary Phone Number</Label>
+                <PhoneInput
+                  id="secondaryPhone"
+                  international
+                  defaultCountry="UG"
+                  value={formData.secondaryPhone}
+                  onChange={(value) => handleInputChange('secondaryPhone', value)}
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-within:outline-none focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   disabled={createStaffMemberMutation.isPending}
                 />
               </div>
